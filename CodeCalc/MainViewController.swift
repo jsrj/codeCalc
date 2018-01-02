@@ -121,6 +121,13 @@ class MainViewController: UIViewController {
         selectedDisplay = "variableY_display"
         outlineSelected(display: "variableB_display")
     }
+    @IBAction func match_display_value(_ mainDisplay: UITextField?) -> Void {
+        displayValue = mainDisplay!.text!
+    }
+    
+//    @IBAction func clear_main_display(_ mainDisplay: UITextField?) -> Void {
+//        updateDisplay(val: "[CLEAR]", target: "mainDisplay", append: false)
+//    }
     
     // Number Pad Inputs
     @IBAction func in0(_ numpad_0: UIButton!) -> Void {
@@ -209,82 +216,182 @@ class MainViewController: UIViewController {
     }
     
     // Operator Inputs
+    var activeMethod: String?
+    //var activeValue1: Int?   = nil
+    //var activeValue2: Int?   = nil
+    var currentSet:   String = "AB"
+    
     @IBAction func multiply(_ pemdas_mult: UIButton!) -> Void {
         /*
          Find first empty variable to store current value.
          If none are empty, overwrite A and store it as first overwritten.
          If pressed again, overwrite or populate next variable (e.g. B, X, or Y).
         */
-        var value1: Int?
-        var value2: Int?
-        if (value1 == nil) {
-            if (varA == nil) {
-                value1      = Int(displayValue)
-                calculatedA = Int(displayValue)
-                varA        = displayValue
-                updateDisplay(val: displayValue, target: "variableA_display", append: false)
-                displayValue = ""
-            } else if (varB == nil) {
-                value1      = Int(displayValue)
-                calculatedB = Int(displayValue)
-                varB        = displayValue
-                updateDisplay(val: displayValue, target: "variableB_display", append: false)
-                displayValue = ""
-            } else if (varX == nil) {
-                value1      = Int(displayValue)
-                calculatedX = Int(displayValue)
-                varX        = displayValue
-                updateDisplay(val: displayValue, target: "variableX_display", append: false)
-                displayValue = ""
-            } else if (varY == nil) {
-                value1      = Int(displayValue)
-                calculatedY = Int(displayValue)
-                varY        = displayValue
-                updateDisplay(val: displayValue, target: "variableY_display", append: false)
-                displayValue = ""
-            } else {
-                updateDisplay(val: "Error", target: "mainDisplay", append: false)
-                displayValue = ""
+        activeMethod = "Multiply"
+        
+        
+        if (currentSet == "AB") {
+            calculatedB = calculatedA != nil ? Int(mainVal!) : nil
+            calculatedA = calculatedB == nil ? Int(mainVal!) : calculatedA!
+            if (calculatedA != nil) {
+                varA        = String(calculatedA!)
+                updateDisplay(val: varA!, target: "variableA_display", append: false)
             }
-        } else if (value2 == nil) {
-            if (varA == nil) {
-                value2      = Int(displayValue)
-                calculatedA = Int(displayValue)
-                varA        = displayValue
-                updateDisplay(val: displayValue, target: "variableA_display", append: false)
-                displayValue = ""
-            } else if (varB == nil) {
-                value2      = Int(displayValue)
-                calculatedB = Int(displayValue)
-                varB        = displayValue
-                updateDisplay(val: displayValue, target: "variableB_display", append: false)
-                displayValue = ""
-            } else if (varX == nil) {
-                value2      = Int(displayValue)
-                calculatedX = Int(displayValue)
-                varX        = displayValue
-                updateDisplay(val: displayValue, target: "variableX_display", append: false)
-                displayValue = ""
-            } else if (varY == nil) {
-                value2      = Int(displayValue)
-                calculatedY = Int(displayValue)
-                varY        = displayValue
-                updateDisplay(val: displayValue, target: "variableY_display", append: false)
-                displayValue = ""
-            } else {
-                updateDisplay(val: "Error", target: "mainDisplay", append: false)
+            if (calculatedB != nil) {
+                varB        = String(calculatedB!)
+                updateDisplay(val: varB!, target: "variableB_display", append: false)
             }
-        } else {
-            /*
-            Display value of value1*value2. Stores this value in third open variable, if one exists.
-            Also do this if Eval is now pressed.
-            */
-            updateDisplay(val: "\(value1!*value2!)", target: "mainDisplay", append: false)
         }
+        if (currentSet == "XY") {
+            calculatedY = calculatedX != nil ? Int(mainVal!) : nil
+            calculatedX = calculatedY == nil ? Int(mainVal!) : calculatedX!
+            if (calculatedX != nil) {
+                varX        = String(calculatedX!)
+                updateDisplay(val: varX!, target: "variableX_display", append: false)
+            }
+            if (calculatedY != nil) {
+                varY        = String(calculatedY!)
+                updateDisplay(val: varY!, target: "variableY_display", append: false)
+            }
+        }
+
+        
+        if (currentSet == "AB" && (calculatedA != nil && calculatedB != nil)) {
+            var newValue: Int?
+                newValue = Int(
+                    calculate(
+                        method:       "Multiply",
+                        Operator1:    Int(variableA_display!.text!)!,
+                        Operator2:    Int(variableB_display!.text!)!
+                ))
+            updateDisplay(
+                val:    String(newValue!),
+                target: "mainDisplay",
+                append: false
+            )
+            calculatedX = newValue
+            calculatedY = nil
+            currentSet  = "XY"
+        }
+        if (currentSet == "XY" && (calculatedX != nil && calculatedY != nil)) {
+            var newValue: Int?
+            newValue = Int(
+                calculate(
+                    method:       "Multiply",
+                    Operator1:    Int(variableX_display!.text!)!,
+                    Operator2:    Int(variableY_display!.text!)!
+            ))
+            updateDisplay(
+                val:    String(newValue!),
+                target: "mainDisplay",
+                append: false
+            )
+            calculatedA = newValue
+            calculatedB = nil
+            currentSet  = "AB"
+        }
+        
+        mainVal = ""
     }
     
     // Function Inputs
     // Evaluate
+    func calculate(method: String = "", Operator1: Int, Operator2: Int, returnTarget: String? = "") -> String {
+        var    evaluated: Int?
+        
+        switch method {
+            case "Multiply":
+                evaluated = Operator1*Operator2
+            
+            case "Divide":
+                evaluated = Operator1/Operator2
+            
+            case "Add":
+                evaluated = Operator1+Operator2
+            
+            case "Subtract":
+                evaluated = Operator1-Operator2
+            
+            case "Modulo":
+                evaluated = Operator1%Operator2
+            default:
+                break
+        }
+        switch returnTarget! {
+            case "varA":
+                varA = String(evaluated!)
+            case "varB":
+                varB = String(evaluated!)
+            case "varX":
+                varX = String(evaluated!)
+            case "varY":
+                varY = String(evaluated!)
+            default:
+                break
+        }
+        
+        // Checks which variable set is clear, and then assigns operators accordingly, and sets the active values to those operators.
+        // If the AB set is populated, then the XY set will be used, with X becoming the evaluation of the AB set.
+        if (currentSet == "AB"){
+            calculatedA = Int(variableA_display!.text!)
+            calculatedB = Int(variableB_display!.text!)
+        }
+        if (currentSet == "XY"){
+            calculatedX = Int(variableX_display!.text!)
+            calculatedY = Int(variableY_display!.text!)
+        }
+        
+        currentSet = (varA != nil || varA != "") && (varB != nil || varB != "") && currentSet == "AB" ? "XY" : "AB"
+        return String(evaluated!)
+    }
+    @IBAction func evaluate(_ eval: UIButton!) -> Void {
+        var dynamicOperator: Int?
+        if (currentSet == "AB") {
+            dynamicOperator     = calculatedB == nil ? Int(mainVal!) : calculatedB
+            variableB_display!.text = String(dynamicOperator!)
+            if (varB == nil) {
+                varB         = String(dynamicOperator!)
+                calculatedB  = Int(varB!)
+                updateDisplay(val: varB!, target: "variableB_display", append: false)
+            }
+        }
+        if (currentSet == "XY") {
+            dynamicOperator     = calculatedY == nil ? Int(mainVal!) : calculatedY
+            variableY_display!.text = String(dynamicOperator!)
+            if (varX == nil) {
+                varX         = String(dynamicOperator!)
+                calculatedX  = Int(varX!)
+                updateDisplay(val: varX!, target: "variableY_display", append: false)
+            }
+        }
+        
+        if (currentSet == "AB") {
+            updateDisplay(
+                val: calculate(
+                    method: activeMethod!,
+                    Operator1: Int(variableA_display!.text!)!,
+                    Operator2: Int(variableB_display!.text!)!
+                ),
+                target: "mainDisplay",
+                append: false
+            )
+            
+            currentSet = "XY"
+        }
+        if (currentSet == "XY") {
+            updateDisplay(
+                val: calculate(
+                    method: activeMethod!,
+                    Operator1: Int(variableX_display!.text!)!,
+                    Operator2: Int(variableY_display!.text!)!
+                ),
+                target: "mainDisplay",
+                append: false
+            )
+            
+            currentSet = "AB"
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

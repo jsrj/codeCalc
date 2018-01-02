@@ -496,6 +496,9 @@
                             <integer key="value" value="8"/>
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="evaluate:" destination="-1" eventType="touchUpInside" id="kJQ-iP-cxU"/>
+                    </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="982-qV-ILv" userLabel="numpad_0">
                     <rect key="frame" x="16" y="567" width="167" height="80"/>
@@ -662,7 +665,7 @@
                         <color key="titleShadowColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </state>
                 </button>
-                <textField clipsSubviews="YES" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="right" contentVerticalAlignment="center" text="1" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="25" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="gvU-iG-gqI" userLabel="mainDisplay">
+                <textField clipsSubviews="YES" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="right" contentVerticalAlignment="center" textAlignment="right" adjustsFontSizeToFit="NO" minimumFontSize="25" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="gvU-iG-gqI" userLabel="mainDisplay">
                     <rect key="frame" x="17" y="52" width="340" height="70"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <color key="tintColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -676,7 +679,7 @@
                     </constraints>
                     <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="44"/>
-                    <textInputTraits key="textInputTraits"/>
+                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numberPad" enablesReturnKeyAutomatically="YES" smartDashesType="no" smartQuotesType="no"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                             <integer key="value" value="8"/>
@@ -684,6 +687,9 @@
                         <userDefinedRuntimeAttribute type="boolean" keyPath="layer.isUserInteractionEnabled" value="NO"/>
                     </userDefinedRuntimeAttributes>
                     <connections>
+                        <action selector="clear_main_display:" destination="-1" eventType="touchCancel" id="MOV-FJ-kuM"/>
+                        <action selector="clear_main_display:" destination="-1" eventType="editingDidEnd" id="fQe-V3-r8Z"/>
+                        <action selector="match_display_value:" destination="-1" eventType="valueChanged" id="PrN-EC-BHR"/>
                         <action selector="select_main_display:" destination="-1" eventType="editingDidBegin" id="mwJ-6S-6VA"/>
                     </connections>
                 </textField>
